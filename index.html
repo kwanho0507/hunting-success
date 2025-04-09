@@ -68,6 +68,16 @@
       opacity: 0.6;
       cursor: not-allowed;
     }
+    #buttonGroup {
+      margin-top: 20px;
+    }
+    #shareArea {
+      margin-top: 20px;
+    }
+    #adArea {
+      margin-top: 40px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -90,6 +100,25 @@
 
     <div id="resultBox" class="hidden"></div>
     <div id="funMessage" class="hidden"></div>
+
+    <div id="buttonGroup" class="hidden">
+      <button onclick="restartApp()">🔄 다시 측정하기</button>
+      <button onclick="saveAsImage()">💾 이미지로 저장</button>
+    </div>
+
+    <div id="shareArea" class="hidden">
+      <button onclick="shareResult()">📤 공유하기</button>
+    </div>
+
+    <div id="adArea">
+      <!-- 광고 자리 (AdSense 등) -->
+      <p style="color: gray; font-size: 14px;">🔻 여기에 광고가 표시됩니다 🔻</p>
+      <div style="width: 100%; max-width: 320px; margin: 0 auto; background: #f0f0f0; padding: 20px; border-radius: 8px;">
+        <!-- 예: <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+        <!-- 실제 광고 코드는 여기에 붙이기 -->
+        <p style="color: #999;">(광고 영역)</p>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -123,6 +152,8 @@
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('resultBox').classList.add('hidden');
       document.getElementById('funMessage').classList.add('hidden');
+      document.getElementById('buttonGroup').classList.add('hidden');
+      document.getElementById('shareArea').classList.add('hidden');
 
       setTimeout(() => {
         document.getElementById('loading').classList.add('hidden');
@@ -138,8 +169,38 @@
 
         document.getElementById('funMessage').innerText = message;
         document.getElementById('funMessage').classList.remove('hidden');
+        document.getElementById('buttonGroup').classList.remove('hidden');
+        document.getElementById('shareArea').classList.remove('hidden');
       }, 3000);
     }
+
+    function restartApp() {
+      location.reload();
+    }
+
+    function saveAsImage() {
+      html2canvas(document.querySelector("#mainContent"), { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'hunting_result.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    function shareResult() {
+      const shareText = document.getElementById('resultBox').innerText + '\n' + document.getElementById('funMessage').innerText + '\n👉 https://kwanho0507.github.io/hunting-success/';
+      if (navigator.share) {
+        navigator.share({
+          title: '나의 헌팅 성공률',
+          text: shareText
+        }).catch(console.error);
+      } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+          alert("링크가 복사되었습니다! 친구에게 붙여넣기 해보세요");
+        });
+      }
+    }
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>

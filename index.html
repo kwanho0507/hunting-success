@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나의 헌팅 성공률은?</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #fefefe;
+      padding: 30px;
+    }
+    .hidden {
+      display: none;
+    }
+    #resultBox {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    #funMessage {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    #loading {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📸 나의 헌팅 성공률은?</h1>
+  <input type="file" accept="image/*" id="photoInput" /><br><br>
+  <button onclick="showResult()">결과 보기</button>
+
+  <div id="loading" class="hidden">
+    <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" width="150" alt="분석중 애니메이션">
+    <p>분석 중입니다...</p>
+  </div>
+
+  <div id="resultBox" class="hidden"></div>
+  <div id="funMessage" class="hidden"></div>
+
+  <script>
+    function showResult() {
+      const photoInput = document.getElementById('photoInput');
+      if (!photoInput.files.length) {
+        alert('사진을 먼저 올려주세요!');
+        return;
+      }
+
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('resultBox').classList.add('hidden');
+      document.getElementById('funMessage').classList.add('hidden');
+
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hidden');
+        const score = Math.floor(Math.random() * 101); // 0~100
+        document.getElementById('resultBox').innerText = `🎯 헌팅 성공률: ${score}%`;
+        document.getElementById('resultBox').classList.remove('hidden');
+
+        let message = '';
+        if (score > 90) message = '🔥 당신은 헌팅의 신!';
+        else if (score > 70) message = '😎 매력 넘치네요!';
+        else if (score > 40) message = '🙂 오늘 나쁘지 않아요!';
+        else message = '💔 음… 집에 계시는 게...';
+
+        document.getElementById('funMessage').innerText = message;
+        document.getElementById('funMessage').classList.remove('hidden');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

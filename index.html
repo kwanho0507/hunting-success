@@ -10,21 +10,21 @@
       padding: 0;
       box-sizing: border-box;
     }
-    body, html {
+    html, body {
       width: 100%;
       height: 100%;
       font-family: sans-serif;
-      overflow: hidden;
     }
     #startScreen {
       position: relative;
-      width: 100%;
+      width: 100vw;
       height: 100vh;
-      background: url("첫페이지.jpg") no-repeat center center/cover;
+      background: url("첫페이지.jpg") no-repeat center center;
+      background-size: cover;
     }
     #startBtn {
       position: absolute;
-      bottom: 80px;
+      bottom: 10vh;
       left: 50%;
       transform: translateX(-50%);
       background: white;
@@ -42,6 +42,13 @@
       text-align: center;
       padding: 30px;
     }
+    #previewImage {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
     #resultBox {
       margin-top: 20px;
       font-size: 24px;
@@ -54,6 +61,13 @@
     #loading {
       margin-top: 20px;
     }
+    .hidden {
+      display: none;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -65,8 +79,9 @@
   <!-- 본문 -->
   <div id="mainContent">
     <h1>📸 나의 헌팅 성공률은?</h1>
-    <input type="file" accept="image/*" id="photoInput" /><br><br>
-    <button onclick="showResult()">결과 보기</button>
+    <input type="file" accept="image/*" id="photoInput" onchange="previewPhoto(event)" /><br><br>
+    <img id="previewImage" class="hidden" />
+    <button id="resultButton" onclick="showResult()">결과 보기</button>
 
     <div id="loading" class="hidden">
       <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" width="150" alt="분석중 애니메이션">
@@ -83,13 +98,28 @@
       document.getElementById('mainContent').style.display = 'block';
     }
 
+    function previewPhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('previewImage');
+          img.src = e.target.result;
+          img.classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
     function showResult() {
       const photoInput = document.getElementById('photoInput');
+      const resultButton = document.getElementById('resultButton');
       if (!photoInput.files.length) {
         alert('사진을 먼저 올려주세요!');
         return;
       }
 
+      resultButton.disabled = true;
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('resultBox').classList.add('hidden');
       document.getElementById('funMessage').classList.add('hidden');
